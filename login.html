@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finanças</title>
+    <link rel="stylesheet" type="text/css" href="/public/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="navbar">
+        <div class="logo-container">
+          <img class="logo" src="/public/image/financa.ico" alt="Logo" />
+          <h3 class="titulo">Finanças</h3>
+        </div>
+      </div>
+    </header>
+
+    <h1 class="h1-login">Login</h1>
+    <div class="center">
+        <div class="form-login">
+            <form id="loginForm" method="post"> 
+                <p class="text-form">CPF:</p>
+                <input type="text" name="cpf" class="input-form">
+                <p class="text-form">Senha:</p>
+                <input type="password" name="senha" class="input-form">
+
+                <input type="submit" value="Entrar" class="botao-login" onclick="submitForm('entrar')"></input>
+                <input type="submit" value="Cadastre-se" class="cadastrar" onclick="submitForm('cadastrar')"></input>
+            </form>
+        </div>
+    </div>
+
+    <script>
+      function submitForm(action){
+        const form = document.getElementById('loginForm');
+        if(action == 'entrar'){
+          form.action='/loading';
+        } else if(action == 'cadastrar'){
+          form.action='/cadastrar';
+        }
+        form.submit()
+      }
+    </script>
+
+
+
+    <footer class="footer">
+      <div class="coluna-esquerda">
+        <img class="minhaLogo" src="/public/image/logo.png" alt="Logo" />
+      </div>
+      <div class="coluna-direita">
+        <div class="redes-sociais">
+          <h3 class="text">Contact Me</h3>
+          <div class="rede">
+            <a class="a" href="https://www.instagram.com/gabriel.evaristo/">
+              <img
+                class="img-footer"
+                src="/public/image/instagram.ico"
+                alt="Instagram"
+              />
+              <h3 class="text">@gabriel.evaristo</h3>
+            </a>
+          </div>
+          <div class="rede">
+            <a
+              class="a"
+              href="https://www.linkedin.com/in/gabriel-evaristo-carlos-359538231/"
+            >
+              <img
+                class="img-footer"
+                src="/public/image/linkedin.ico"
+                alt="LinkedIn"
+              />
+              <h3 class="text">Gabriel Evaristo Carlos</h3>
+            </a>
+          </div>
+        </div>
+        <div class="infos">
+          <div class="paginas">
+            <h3 class="text text-footer">inicio</h3>
+            <ul class="ul ul-footer">
+              <li class="text text-footerMenor"><a class="a">home</a></li>
+              <li class="text text-footerMenor"><a class="">Fiis</a></li>
+              <li class="text text-footerMenor"><a class="a">extrato</a></li>
+            </ul>
+          </div>
+          <div class="paginas">
+            <h3 class="text text-footer">Sobre</h3>
+            <ul class="ul ul-footer">
+              <li class="text text-footerMenor"><a class="a">Contato</a></li>
+              <li class="text text-footerMenor"><a class="a">Blog</a></li>
+            </ul>
+          </div>
+          <div class="paginas">
+            <h3 class="text text-footer">Suporte</h3>
+            <ul class="ul ul-footer">
+              <li class="text text-footerMenor"><a class="a">FAQ</a></li>
+              <li class="text text-footerMenor"><a class="a">Telefone</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

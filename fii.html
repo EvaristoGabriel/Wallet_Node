@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fundos Imobiliários</title>
+    <link rel="stylesheet" type="text/css" href="/public/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="navbar">
+        <div class="logo-container">
+          <img class="logo" src="/public/image/financa.ico" alt="Logo" />
+          <h3 class="titulo">Finanças</h3>
+        </div>
+        <nav class="nav-navbar">
+          <ul class="ul">
+            <li class="li">
+              <a href="/" class="a"
+                ><img class="imgnav" src="/public/image/home.ico" />
+                <h3 class="titulo-nav">Home</h3>
+              </a>
+            </li>
+            <li class="li">
+              <a href="/fii" class="a"
+                ><img class="imgnav" src="/public/image/fii.ico" />
+                <h3 class="titulo-nav">Fii</h3>
+              </a>
+            </li>
+            <li class="li">
+              <a href="/tesouro" class="a"
+                ><img class="imgnav" src="/public/image/tesouro.ico" />
+                <h3 class="titulo-nav">tesouro</h3>
+              </a>
+            </li>
+            <li class="li">
+              <a href="/acoes" class="a"
+                ><img class="imgnav" src="/public/image/acoes.ico" />
+                <h3 class="titulo-nav">ações</h3>
+              </a>
+            </li>
+            <li class="li">
+              <a href="/extrato" class="a"
+                ><img class="imgnav" src="/public/image/extract.ico" />
+                <h3 class="titulo-nav">extrato</h3>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container body-content">
+      <h2 class="texto titulo">Fundos imobiliários</h2>
+
+      <!-- <form class="form-component" action="" method="post">
+        <div class="div-form-esq">
+          <input type="hidden" name="nome" value="" />
+          <button name="FiiDetail" class="componente" type="submit">
+            <div class="cima">
+              <h3 class="h3"></h3>
+              <p class="texto-fii">Valor:</p>
+            </div>
+            <div class="baixo">
+              <div class="baixo-esq">
+                <p class="texto-fii">Ultimo dividendo:</p>
+                <p class="texto-fii">R$</p>
+              </div>
+              <div class="baixo-dir">
+                <p class="texto-fii texto-fii-baixo">Quantidade de cotas:</p>
+                <p class="texto-fii texto-cotas"></p>
+              </div>
+            </div>
+          </button>
+        </div>
+        <div class="div-form-dir">
+          <ul class="ul-component">
+            <li class="li-component">
+              <a href="" title="Adicionar ao extrato" class="a-component"
+                ><img
+                  class="img-component"
+                  src="/public/image/addtoextract.ico"
+                />
+              </a>
+            </li>
+            <li class="li-component">
+              <a href="" title="Deletar" class="a-component"
+                ><img class="img-component" src="/public/image/trash.ico" />
+              </a>
+            </li>
+          </ul>
+        </div>
+      </form> -->
+
+      <button id="openModal"> Adicionar Fundo Imobiliário</button>
+      <div id="ModalFii" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Adicionar Fundo Imobiliário</h2>
+          <form id="addFiiForm">
+            <p>Nome</p>
+            <input type="text" name="nome" required>
+            <p>Quantidade de cotas</p>
+            <input type="text" name="qtdecotas" required>
+            <p>Valor de Compra</p>
+            <input type="text" name="valcompra" required>
+            <p>Data de Compra</p>
+            <input type="date" name="datacompra" required>
+            <button type="submit">Adicionar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      async function fetchFiis() {
+          const response = await fetch('/api/fiis');
+          const fiis = await response.json();
+          const fiiList = document.getElementById('fii-list');
+
+          fiis.forEach(fii => {
+              const li = document.createElement('li');
+              li.innerHTML = `
+                  <h2>${fii.nome}</h2>
+                  <p>Quantidade de cotas: ${fii.quantidade_cotas}</p>
+                  <p>Valor gasto: R$${fii.valor_gasto.toFixed(2)}</p>
+                  <p>Dividendos ganhos: R$${fii.dividendos.toFixed(2)}</p>
+              `;
+              fiiList.appendChild(li);
+          });
+      }
+
+      fetchFiis();
+
+      // Modal
+      const modal = document.getElementById("ModalFii");
+      const btn = document.getElementById("openModal");
+      const span = document.getElementsByClassName("close")[0];
+      const form = document.getElementById("addFiiForm");
+
+      btn.onclick = function() {
+          modal.style.display = "block";
+      }
+
+      span.onclick = function() {
+          modal.style.display = "none";
+      }
+
+      window.onclick = function(event) {
+          if (event.target == modal) {
+              modal.style.display = "none";
+          }
+      }
+
+      form.onsubmit = async function(event) {
+          event.preventDefault();
+          const formData = new FormData(form);
+          const data = Object.fromEntries(formData);
+
+          const response = await fetch('/api/fiis', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+          });
+
+          if (response.ok) {
+              // Fechar o modal e atualizar a lista
+              modal.style.display = "none";
+              fetchFiis();
+          } else {
+              alert('Erro ao adicionar fundo imobiliário');
+          }
+      }
+  </script>
+    <footer class="footer">
+      <div class="coluna-esquerda">
+        <img class="minhaLogo" src="/public/image/logo.png" alt="Logo" />
+      </div>
+      <div class="coluna-direita">
+        <div class="redes-sociais">
+          <h3 class="text">Contact Me</h3>
+          <div class="rede">
+            <a class="a" href="https://www.instagram.com/gabriel.evaristo/">
+              <img
+                class="img-footer"
+                src="/public/image/instagram.ico"
+                alt="Instagram"
+              />
+              <h3 class="text">@gabriel.evaristo</h3>
+            </a>
+          </div>
+          <div class="rede">
+            <a
+              class="a"
+              href="https://www.linkedin.com/in/gabriel-evaristo-carlos-359538231/"
+            >
+              <img
+                class="img-footer"
+                src="/public/image/linkedin.ico"
+                alt="LinkedIn"
+              />
+              <h3 class="text">Gabriel Evaristo Carlos</h3>
+            </a>
+          </div>
+        </div>
+        <div class="infos">
+          <div class="paginas">
+            <h3 class="text text-footer">inicio</h3>
+            <ul class="ul ul-footer">
+              <li class="text text-footerMenor"><a class="a">home</a></li>
+              <li class="text text-footerMenor"><a class="">Fiis</a></li>
+              <li class="text text-footerMenor"><a class="a">extrato</a></li>
+            </ul>
+          </div>
+          <div class="paginas">
+            <h3 class="text text-footer">Sobre</h3>
+            <ul class="ul ul-footer">
+              <li class="text text-footerMenor"><a class="a">Contato</a></li>
+              <li class="text text-footerMenor"><a class="a">Blog</a></li>
+            </ul>
+          </div>
+          <div class="paginas">
+            <h3 class="text text-footer">Suporte</h3>
+            <ul class="ul ul-footer">
+              <li class="text text-footerMenor"><a class="a">FAQ</a></li>
+              <li class="text text-footerMenor"><a class="a">Telefone</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

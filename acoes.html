@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fundos Imobiliários</title>
+    <link rel="stylesheet" type="text/css" href="/public/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="navbar">
+        <div class="logo-container">
+          <img class="logo" src="/public/image/financa.ico" alt="Logo" />
+          <h3 class="titulo">Finanças</h3>
+        </div>
+        <nav class="nav-navbar">
+          <ul class="ul">
+            <li class="li">
+              <a href="/" class="a"
+                ><img class="imgnav" src="/public/image/home.ico" />
+                <h3 class="titulo-nav">Home</h3>
+              </a>
+            </li>
+            <li class="li">
+              <a href="/fii" class="a"
+                ><img class="imgnav" src="/public/image/fii.ico" />
+                <h3 class="titulo-nav">Fii</h3>
+              </a>
+            </li>
+            <li class="li">
+              <a href="/tesouro" class="a"
+                ><img class="imgnav" src="/public/image/tesouro.ico" />
+                <h3 class="titulo-nav">tesouro</h3>
+              </a>
+            </li>
+            <li class="li">
+              <a href="/acoes" class="a"
+                ><img class="imgnav" src="/public/image/acoes.ico" />
+                <h3 class="titulo-nav">ações</h3>
+              </a>
+            </li>
+            <li class="li">
+              <a href="/extrato" class="a"
+                ><img class="imgnav" src="/public/image/extract.ico" />
+                <h3 class="titulo-nav">extrato</h3>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container body-content">
+      <h2 class="texto titulo">Ações</h2>
+
+      <form class="form-component" action="" method="post">
+        <div class="div-form-esq">
+          <input type="hidden" name="id" value="" />
+          <button
+            name="tesouroDetail"
+            class="componente componente-tesouro"
+            type="submit"
+          >
+            <div class="cima cima-tesouro">
+              <h3 class="h3"></h3>
+              <p class="texto-fii">
+                Valor Aplicado:
+              </p>
+            </div>
+            <div class="baixo baixo-tesouro">
+              <div class="baixo-esq">
+                <p class="texto-fii">Valor Atual:</p>
+                <p class="texto-fii">
+                  R$
+                </p>
+              </div>
+              <div class="baixo-dir">
+                <p class="texto-fii texto-fii-baixo">Valor Prometido:</p>
+                <p class="texto-fii">R$</p>
+              </div>
+            </div>
+          </button>
+        </div>
+        <div class="div-form-dir">
+          <ul class="ul-component">
+            <li class="li-component">
+              <a href="" title="Adicionar ao extrato" class="a-component"
+                ><img
+                  class="img-component"
+                  src="/public/image/addtoextract.ico"
+                />
+              </a>
+            </li>
+            <li class="li-component">
+              <a href="" title="Deletar" class="a-component"
+                ><img class="img-component" src="/public/image/trash.ico" />
+              </a>
+            </li>
+          </ul>
+        </div>
+      </form>
+
+      <form action="" class="form" method="post">
+        <input
+          type="submit"
+          class="close-button"
+          value="AddFii"
+          name="AddFii"
+          class="input"
+        />
+      </form>
+    </div>
+
+    <footer class="footer">
+      <div class="coluna-esquerda">
+        <img class="minhaLogo" src="/public/image/logo.png" alt="Logo" />
+      </div>
+      <div class="coluna-direita">
+        <div class="redes-sociais">
+          <h3 class="text">Contact Me</h3>
+          <div class="rede">
+            <a class="a" href="https://www.instagram.com/gabriel.evaristo/">
+              <img
+                class="img-footer"
+                src="/public/image/instagram.ico"
+                alt="Instagram"
+              />
+              <h3 class="text">@gabriel.evaristo</h3>
+            </a>
+          </div>
+          <div class="rede">
+            <a
+              class="a"
+              href="https://www.linkedin.com/in/gabriel-evaristo-carlos-359538231/"
+            >
+              <img
+                class="img-footer"
+                src="/public/image/linkedin.ico"
+                alt="LinkedIn"
+              />
+              <h3 class="text">Gabriel Evaristo Carlos</h3>
+            </a>
+          </div>
+        </div>
+        <div class="infos">
+          <div class="paginas">
+            <h3 class="text text-footer">inicio</h3>
+            <ul class="ul ul-footer">
+              <li class="text text-footerMenor"><a class="a">home</a></li>
+              <li class="text text-footerMenor"><a class="">Fiis</a></li>
+              <li class="text text-footerMenor"><a class="a">extrato</a></li>
+            </ul>
+          </div>
+          <div class="paginas">
+            <h3 class="text text-footer">Sobre</h3>
+            <ul class="ul ul-footer">
+              <li class="text text-footerMenor"><a class="a">Contato</a></li>
+              <li class="text text-footerMenor"><a class="a">Blog</a></li>
+            </ul>
+          </div>
+          <div class="paginas">
+            <h3 class="text text-footer">Suporte</h3>
+            <ul class="ul ul-footer">
+              <li class="text text-footerMenor"><a class="a">FAQ</a></li>
+              <li class="text text-footerMenor"><a class="a">Telefone</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

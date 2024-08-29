@@ -1,0 +1,28 @@
+{
+  "name": "wallet",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "node --watch --no-warnings server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@fastify/formbody": "^7.4.0",
+    "@fastify/static": "^7.0.4",
+    "@fastify/view": "^9.1.0",
+    "body-parser": "^1.20.2",
+    "ejs": "^3.1.10",
+    "fastify": "^4.27.0",
+    "fastify-cookie": "^5.6.1",
+    "fastify-html": "^0.4.0",
+    "fastify-session": "^5.2.1",
+    "pg": "^8.11.5",
+    "pg-promise": "^11.6.0"
+  }
+}
