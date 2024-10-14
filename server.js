@@ -16,7 +16,7 @@ server.register(fastifySession, {
     secret: 'meusegredohabsudhkjashdkjhsakjdahskjdhakjadhsj', // Altere para um segredo seguro
     cookie: { secure: true }, // Altere para true se usar HTTPS
     saveUninitialized: false,
-    resave: false
+    resave: false,
 });
 
 server.register(fastifyFormbody);
@@ -38,7 +38,6 @@ server.get('/', (request, reply) =>{
 
 server.post('/submit', async (request, reply) => {
     console.log(request.body)
-    console.log("Ta é aqui")
     const {cpf,senha} = JSON.parse(JSON.stringify(request.body))
     console.log(cpf + ' ' + senha)  
     const result = await db.query("SELECT * FROM fiis;")
@@ -47,20 +46,23 @@ server.post('/submit', async (request, reply) => {
 })
 
 server.post('/loading', async (request, reply) => {
-    const {cpf,senha} = JSON.parse(JSON.stringify(request.body))
+    const {cpf,senha} = request.body
     console.log(cpf + ' ' + senha)
     try{
         const consulta = await db.query("SELECT * FROM usuario WHERE cpf = $1 AND senha = $2",[cpf,senha])
         if(consulta.rows.length === 1){
             request.session.loggedIn = true
             request.session.user = consulta.rows[0]
-            return reply.redirect('/home')
+            // return reply.redirect('/home')
+            return reply.send({ success: true });
         }else{
-            return reply.status(401).send("Credenciais inválidas");
+            // return reply.status(401).send("Credenciais inválidas");
+            return reply.status(401).send({ success: false, message: 'Credenciais inválidas' });
         }
     }catch(err){
         console.error('Erro ao fazer login:', err);
-        return reply.status(500).send('Erro ao fazer login');
+        // return reply.status(500).send('Erro ao fazer login');
+        return reply.status(500).send({ success: false, message: 'Erro ao fazer login' });
     }
 })
 
@@ -101,8 +103,14 @@ server.post('/entrarC', async (request, reply) => {
     }
 })
 
-server.get('/home', (request, reply) =>{
-    const file = readFileSync(__dirname + "/home.html")
+server.get('/home', async (request, reply) =>{
+    console.log('ta aqui')
+    const consultaFiis = await db.query("SELECT quantidade_cotas FROM fiis");
+    console.log("opa" + consultaFiis)
+    let file = readFileSync(__dirname + "/home.html")
+
+    // file = file.replace('{{quantidade_cotas}}',consultaFiis.rows[0].quantidade_cotas);
+
     return reply.type("html").send(file)
 })
 server.get('/fii', (request, reply) =>{

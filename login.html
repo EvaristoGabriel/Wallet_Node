@@ -12,6 +12,52 @@
       rel="stylesheet"
     />
   </head>
+    <!-- <script>
+      function submitForm(action){
+        const form = document.getElementById('loginForm');
+        if(action == 'entrar'){
+          form.action='/loading';
+        } else if(action == 'cadastrar'){
+          form.action='/cadastrar';
+        }
+        form.submit()
+      }
+    </script> -->
+    <script>
+      async function handleLogin(event) {
+        console.log('ta aqui')
+        event.preventDefault(); // Impede o formulário de fazer o reload da página
+        
+        const cpf = document.getElementById('cpf').value;
+        const senha = document.getElementById('senha').value;
+        const errorMessage = 'deu ruim parça';
+        console.log(cpf +' ' + senha)
+
+          try {
+              const response = await fetch('/loading', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ cpf, senha })
+              });
+
+              const result = await response.json();
+              console.log(result)
+              if (result.success) {
+                  // Redireciona para a página /home se o login for bem-sucedido
+                  window.location.href = '/home';
+              } else {
+                  // Exibe a mensagem de erro se o login falhar
+                  errorMessage.textContent = result.message;
+                  alert(result.message)
+              }
+          } catch (error) {
+              errorMessage.textContent = 'Erro ao fazer login, tente novamente mais tarde.';
+          }
+      }
+  </script>
+
   <body>
     <header>
       <div class="navbar">
@@ -25,29 +71,19 @@
     <h1 class="h1-login">Login</h1>
     <div class="center">
         <div class="form-login">
-            <form id="loginForm" method="post"> 
+            <form id="loginForm" method="post", onsubmit="handleLogin(event)"> 
                 <p class="text-form">CPF:</p>
-                <input type="text" name="cpf" class="input-form">
+                <input id='cpf' type="text" name="cpf" class="input-form">
                 <p class="text-form">Senha:</p>
-                <input type="password" name="senha" class="input-form">
+                <input id="senha" type="password" name="senha" class="input-form">
 
-                <input type="submit" value="Entrar" class="botao-login" onclick="submitForm('entrar')"></input>
-                <input type="submit" value="Cadastre-se" class="cadastrar" onclick="submitForm('cadastrar')"></input>
+                <input type="submit" value="Entrar" class="botao-login"></input>
+                <input type="submit" value="Cadastre-se" class="cadastrar" ></input>
             </form>
+            <!-- onclick="submitForm('entrar')"
+            onclick="submitForm('cadastrar')" -->
         </div>
     </div>
-
-    <script>
-      function submitForm(action){
-        const form = document.getElementById('loginForm');
-        if(action == 'entrar'){
-          form.action='/loading';
-        } else if(action == 'cadastrar'){
-          form.action='/cadastrar';
-        }
-        form.submit()
-      }
-    </script>
 
 
 
