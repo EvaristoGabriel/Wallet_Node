@@ -14,7 +14,10 @@ const server = fastify()
 server.register(fastifyCookie);
 server.register(fastifySession, {
     secret: 'meusegredohabsudhkjashdkjhsakjdahskjdhakjadhsj', // Altere para um segredo seguro
-    cookie: { secure: true }, // Altere para true se usar HTTPS
+    cookie: { secure: process.env.NODE_ENV === 'production',
+            httpOnly: true,
+            sameSite: 'Strict',
+     }, // Altere para true se usar HTTPS
     saveUninitialized: false,
     resave: false,
 });
@@ -40,7 +43,7 @@ server.post('/submit', async (request, reply) => {
     console.log(request.body)
     const {cpf,senha} = JSON.parse(JSON.stringify(request.body))
     console.log(cpf + ' ' + senha)  
-    const result = await db.query("SELECT * FROM fiis;")
+    const result = await db.query("SELECT * FROM fii;")
     console.log(result.rows)
     reply.status(200).send()
 })
@@ -53,10 +56,14 @@ server.post('/loading', async (request, reply) => {
         if(consulta.rows.length === 1){
             request.session.loggedIn = true
             request.session.user = consulta.rows[0]
+            request.session.userId = consulta.rows[0].id
             // return reply.redirect('/home')
+            console.log("Até aqui ta indo")
+            console.log(request.session.userId)
             return reply.send({ success: true });
         }else{
             // return reply.status(401).send("Credenciais inválidas");
+            console.log("Deu erro?")
             return reply.status(401).send({ success: false, message: 'Credenciais inválidas' });
         }
     }catch(err){
@@ -72,7 +79,7 @@ server.post('/entrar', async (request, reply) => {
     // console.log("Ta é aqui")
     // const {cpf,senha} = JSON.parse(JSON.stringify(request.body))
     // console.log(cpf + ' ' + senha)  
-    // const result = await db.query("SELECT * FROM fiis;")
+    // const result = await db.query("SELECT * FROM fii;")
     // console.log(result.rows)
     // reply.status(200).send()
 })
@@ -83,7 +90,7 @@ server.post('/cadastrar', async (request, reply) => {
     // console.log("Ta é aqui")
     // const {cpf,senha} = JSON.parse(JSON.stringify(request.body))
     // console.log(cpf + ' ' + senha)  
-    // const result = await db.query("SELECT * FROM fiis;")
+    // const result = await db.query("SELECT * FROM fii;")
     // console.log(result.rows)
     // reply.status(200).send()
 })
@@ -104,15 +111,75 @@ server.post('/entrarC', async (request, reply) => {
 })
 
 server.get('/home', async (request, reply) =>{
-    console.log('ta aqui')
-    const consultaFiis = await db.query("SELECT quantidade_cotas FROM fiis");
-    console.log("opa" + consultaFiis)
-    let file = readFileSync(__dirname + "/home.html")
+    console.log(request.session)
+    console.log('ta na home: ')
+    const userid = request.session.userId
+    console.log(userid)
+    const consultaFiis = await db.query(`
+                                            SELECT COUNT(*) as soma, COALESCE(SUM(valor_compra),0.0) as vc, COALESCE(SUM(dividendos),0.0) as div 
+                                            FROM fii f
+                                            INNER JOIN wallet w on f.walletid = w.id 
+                                            INNER JOIN usuario u on w.usercpf = u.cpf 
+                                            WHERE u.id = $1;
+                                       `, [userid]);
+    console.log(consultaFiis.rows)
+    const result = consultaFiis.rows[0]
+    const soma =result.soma
+    const valor_compra = result.vc
+    const dividendos = result.div
+    const consultaTesouro = await db.query(`
+                                            SELECT COALESCE(SUM(valor_compra),0.0) as soma, COALESCE(SUM(valor_prometido),0.0) as vc, COALESCE(SUM(valor_atual),0.0) as div 
+                                            FROM tesouro t
+                                            INNER JOIN wallet w on t.walletid = w.id 
+                                            INNER JOIN usuario u on w.usercpf = u.cpf 
+                                            WHERE u.id = $1;
+                                           `, [userid])
+    console.log(consultaTesouro.rows)
+    const result_tesouro = consultaTesouro.rows[0]
+    const valor_aplicado = result_tesouro.soma
+    const valor_prometido = result_tesouro.vc
+    const valor_atual = result_tesouro.div
+    const consultaAcoes = await db.query(`
+                                            SELECT COUNT(*) as soma, COALESCE(SUM(valor_compra),0.0) as vc, COALESCE(SUM(dividendos),0.0) as div 
+                                            FROM acao a
+                                            INNER JOIN wallet w on a.walletid = w.id 
+                                            INNER JOIN usuario u on w.usercpf = u.cpf 
+                                            WHERE u.id = $1;
+                                        `, [userid])
+    console.log(consultaAcoes.rows)
+    const result_acoes = consultaAcoes.rows[0]
+    const soma_acoes =result_acoes.soma
+    const valor_acoes = result_acoes.vc
+    const dividendos_acoes = result_acoes.div
 
-    // file = file.replace('{{quantidade_cotas}}',consultaFiis.rows[0].quantidade_cotas);
 
-    return reply.type("html").send(file)
+
+
+    const file = readFileSync(__dirname + "/home.html", "utf-8");
+
+    // Substitui o placeholder no HTML pelo valor de soma
+    let updatedFile = file
+    updatedFile = updatedFile.replace("{{quantidade_cotas}}", soma);
+    updatedFile = updatedFile.replace("{{valor_gasto_fii}}", valor_compra);
+    updatedFile = updatedFile.replace("{{dividendos_ganhos_fii}}", dividendos);
+
+    updatedFile = updatedFile.replace("{{valor_aplicado}}", valor_aplicado);
+    updatedFile = updatedFile.replace("{{valor_prometido}}", valor_prometido);
+    updatedFile = updatedFile.replace("{{valor_atual}}", valor_atual);
+
+    updatedFile = updatedFile.replace("{{quantidade_acoes}}", soma_acoes);
+    updatedFile = updatedFile.replace("{{valor_acoes}}", valor_acoes);
+    updatedFile = updatedFile.replace("{{dividendo_acoes}}", dividendos_acoes);
+
+
+
+
+
+    // Envia o HTML atualizado
+    return reply.type("html").send(updatedFile);
 })
+
+
 server.get('/fii', (request, reply) =>{
     const file = readFileSync(__dirname + "/fii.html")
     return reply.type("html").send(file)

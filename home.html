@@ -6,6 +6,20 @@
     <title>Finanças</title>
     <link rel="stylesheet" type="text/css" href="/public/style.css">
 </head>
+
+<!-- <script>
+  async function fetchData() {
+          try {
+              const response = await fetch('/home');
+              const data = await response.json();
+              console.log(data);
+          } catch (error) {
+              console.error('Error fetching data:', error);
+          }
+      }
+
+    fetchData();  // Chama a função para carregar os dados
+</script> -->
 <body>
     <header>
         <div class="navbar">
@@ -51,6 +65,8 @@
       </header>
 
 
+  
+
   <div class="container body-content">
     <div class="container-header">
         <form action="/fii" method="post">
@@ -58,8 +74,8 @@
             <button type="submit" class="container-button">
                 <h3 class="h3">Fundos Imobiliários</h3>
                 <p class="texto-fii"> Quantidade de cotas: {{quantidade_cotas}}</p>
-                <p class="texto-fii"> Valor aproximado Gasto: </p>
-                <p class="texto-fii"> Dividendos Ganhos: </p>
+                <p class="texto-fii"> Valor aproximado Gasto: {{valor_gasto_fii}}</p>
+                <p class="texto-fii"> Dividendos Ganhos: {{dividendos_ganhos_fii}}</p>
             </button>
         </form>
     </div>
@@ -70,9 +86,9 @@
             <input type="hidden" name="nome" value="tesouro">
             <button type="submit" class="container-button">
                 <h3 class="h3">Tesouro Direto</h3>
-                <p class="texto-fii"> Valor Aplicado: </p>
-                <p class="texto-fii"> Valor Prometido: </p>
-                <p class="texto-fii"> Valor Atual: </p>
+                <p class="texto-fii"> Valor Aplicado: {{valor_aplicado}}</p>
+                <p class="texto-fii"> Valor Prometido: {{valor_prometido}}</p>
+                <p class="texto-fii"> Valor Atual: {{valor_atual}}</p>
             </button>
         </form>
     </div>
@@ -83,9 +99,9 @@
             <input type="hidden" name="nome" value="acoes">
             <button type="submit" class="container-button">
                 <h3 class="h3">Ações</h3>
-                <p class="texto-fii"> Quantidade de ações: </p>
-                <p class="texto-fii"> Valor: </p>
-                <p class="texto-fii"> Dividendos Ganhos: </p>
+                <p class="texto-fii"> Quantidade de ações: {{quantidade_acoes}}</p>
+                <p class="texto-fii"> Valor: {{valor_acoes}}</p>
+                <p class="texto-fii"> Dividendos Ganhos: {{dividendo_acoes}}</p>
             </button>
         </form>
     </div>

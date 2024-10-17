@@ -12,51 +12,59 @@
       rel="stylesheet"
     />
   </head>
-    <!-- <script>
-      function submitForm(action){
-        const form = document.getElementById('loginForm');
-        if(action == 'entrar'){
-          form.action='/loading';
-        } else if(action == 'cadastrar'){
-          form.action='/cadastrar';
-        }
-        form.submit()
-      }
-    </script> -->
     <script>
-      async function handleLogin(event) {
-        console.log('ta aqui')
-        event.preventDefault(); // Impede o formulário de fazer o reload da página
-        
+      async function submitForm(action){
+        event.preventDefault(); // Impede o reload da página
+
+        console.log("Tentando submeter o form");
+
+        // Coletando os valores do formulário
         const cpf = document.getElementById('cpf').value;
         const senha = document.getElementById('senha').value;
-        const errorMessage = 'deu ruim parça';
-        console.log(cpf +' ' + senha)
+        const errorMessageElement = document.getElementById('errorMessage'); // Elemento para exibir a mensagem de erro
 
-          try {
-              const response = await fetch('/loading', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({ cpf, senha })
-              });
+        // Limpa mensagens de erro anteriores
+        errorMessageElement.textContent = "";
 
-              const result = await response.json();
-              console.log(result)
-              if (result.success) {
-                  // Redireciona para a página /home se o login for bem-sucedido
-                  window.location.href = '/home';
-              } else {
-                  // Exibe a mensagem de erro se o login falhar
-                  errorMessage.textContent = result.message;
-                  alert(result.message)
-              }
-          } catch (error) {
-              errorMessage.textContent = 'Erro ao fazer login, tente novamente mais tarde.';
-          }
+        // Definir URL para login ou cadastro
+        let url = '';
+        if (action === 'entrar') {
+            url = '/loading';
+        } else if (action === 'cadastrar') {
+            url = '/cadastrar';
+        }
+
+        console.log("Enviando o form para: " + url);
+
+        try {
+            // Fazer a requisição usando fetch
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ cpf, senha })
+            });
+
+            const result = await response.json(); // Aguarda a resposta JSON
+
+            console.log("Result:", result); // Agora deve mostrar o objeto corretamente
+            console.log("Result JSON:", JSON.stringify(result)); // Exibe o JSON como string
+
+            if (response.ok && result.success) {
+                // Redireciona para a página /home se o login for bem-sucedido
+                window.location.href = '/home';
+            } else {
+                // Exibe a mensagem de erro se o login falhar
+                errorMessageElement.textContent = result.message || "Erro ao fazer login";
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error("Erro ao tentar fazer login:", error);
+            errorMessageElement.textContent = 'Erro ao fazer login, tente novamente mais tarde.';
+        }
       }
-  </script>
+    </script>
 
   <body>
     <header>
@@ -71,17 +79,19 @@
     <h1 class="h1-login">Login</h1>
     <div class="center">
         <div class="form-login">
-            <form id="loginForm" method="post", onsubmit="handleLogin(event)"> 
+            <form id="loginForm" method="post"> 
                 <p class="text-form">CPF:</p>
                 <input id='cpf' type="text" name="cpf" class="input-form">
                 <p class="text-form">Senha:</p>
                 <input id="senha" type="password" name="senha" class="input-form">
+                
+                <p id="errorMessage" style="color:red;"></p>
 
-                <input type="submit" value="Entrar" class="botao-login"></input>
-                <input type="submit" value="Cadastre-se" class="cadastrar" ></input>
+                <input type="submit" value="Entrar" class="botao-login" onclick="submitForm('entrar')"></input>
+                <input type="submit" value="Cadastre-se" class="cadastrar" onclick="submitForm('cadastrar')" ></input>
             </form>
-            <!-- onclick="submitForm('entrar')"
-            onclick="submitForm('cadastrar')" -->
+            <!-- 
+            -->
         </div>
     </div>
 

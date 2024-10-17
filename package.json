@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev": "node --watch --no-warnings server.js"
+    "start": "pm2 start server.js --watch",
+    "dev": "nodemon --watch --no-warnings server.js"
   },
   "keywords": [],
   "author": "",
