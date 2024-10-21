@@ -59,6 +59,12 @@
                   <h3 class="titulo-nav">extrato</h3>
                 </a>
               </li>
+              <li class="li">
+                <a href="/" class="a"
+                  ><img class="imgnav" src="/public/image/sair.png" />
+                  <h3 class="titulo-nav">Sair</h3>
+                </a>
+              </li>
             </ul>
           </nav>
         </div>
@@ -69,7 +75,7 @@
 
   <div class="container body-content">
     <div class="container-header">
-        <form action="/fii" method="post">
+        <form action="/fii" method="get">
             <input type="hidden" name="nome" value="fii">
             <button type="submit" class="container-button">
                 <h3 class="h3">Fundos Imobiliários</h3>
@@ -82,7 +88,7 @@
   </div>
   <div class="container body-content">
     <div class="container-header">
-        <form action="/tesouro" method="post">
+        <form action="/tesouro" method="get">
             <input type="hidden" name="nome" value="tesouro">
             <button type="submit" class="container-button">
                 <h3 class="h3">Tesouro Direto</h3>
@@ -95,7 +101,7 @@
   </div>
   <div class="container body-content">
     <div class="container-header">
-        <form action="/acoes" method="post">
+        <form action="/acoes" method="get">
             <input type="hidden" name="nome" value="acoes">
             <button type="submit" class="container-button">
                 <h3 class="h3">Ações</h3>

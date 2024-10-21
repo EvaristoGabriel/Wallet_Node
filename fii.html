@@ -45,54 +45,21 @@
                 <h3 class="titulo-nav">extrato</h3>
               </a>
             </li>
+            <li class="li">
+              <a href="/" class="a"
+                ><img class="imgnav" src="/public/image/sair.png" />
+                <h3 class="titulo-nav">Sair</h3>
+              </a>
+            </li>
           </ul>
         </nav>
       </div>
     </header>
+    <h2 class="texto titulo">Fundos Imobiliários</h2>
+    {{fiis}}
 
-    <div class="container body-content">
-      <h2 class="texto titulo">Fundos imobiliários</h2>
 
-      <!-- <form class="form-component" action="" method="post">
-        <div class="div-form-esq">
-          <input type="hidden" name="nome" value="" />
-          <button name="FiiDetail" class="componente" type="submit">
-            <div class="cima">
-              <h3 class="h3"></h3>
-              <p class="texto-fii">Valor:</p>
-            </div>
-            <div class="baixo">
-              <div class="baixo-esq">
-                <p class="texto-fii">Ultimo dividendo:</p>
-                <p class="texto-fii">R$</p>
-              </div>
-              <div class="baixo-dir">
-                <p class="texto-fii texto-fii-baixo">Quantidade de cotas:</p>
-                <p class="texto-fii texto-cotas"></p>
-              </div>
-            </div>
-          </button>
-        </div>
-        <div class="div-form-dir">
-          <ul class="ul-component">
-            <li class="li-component">
-              <a href="" title="Adicionar ao extrato" class="a-component"
-                ><img
-                  class="img-component"
-                  src="/public/image/addtoextract.ico"
-                />
-              </a>
-            </li>
-            <li class="li-component">
-              <a href="" title="Deletar" class="a-component"
-                ><img class="img-component" src="/public/image/trash.ico" />
-              </a>
-            </li>
-          </ul>
-        </div>
-      </form> -->
-
-      <button id="openModal"> Adicionar Fundo Imobiliário</button>
+      <button class="close-button" id="openModal"> Adicionar Fundo Imobiliário</button>
       <div id="ModalFii" class="modal">
         <div class="modal-content">
           <span class="close">&times;</span>
@@ -112,24 +79,6 @@
       </div>
     </div>
     <script>
-      async function fetchFiis() {
-          const response = await fetch('/api/fiis');
-          const fiis = await response.json();
-          const fiiList = document.getElementById('fii-list');
-
-          fiis.forEach(fii => {
-              const li = document.createElement('li');
-              li.innerHTML = `
-                  <h2>${fii.nome}</h2>
-                  <p>Quantidade de cotas: ${fii.quantidade_cotas}</p>
-                  <p>Valor gasto: R$${fii.valor_gasto.toFixed(2)}</p>
-                  <p>Dividendos ganhos: R$${fii.dividendos.toFixed(2)}</p>
-              `;
-              fiiList.appendChild(li);
-          });
-      }
-
-      fetchFiis();
 
       // Modal
       const modal = document.getElementById("ModalFii");
