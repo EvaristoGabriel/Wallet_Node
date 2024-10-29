@@ -45,6 +45,12 @@
                 <h3 class="titulo-nav">extrato</h3>
               </a>
             </li>
+            <li class="li">
+              <a href="/" class="a"
+                ><img class="imgnav" src="/public/image/sair.png" />
+                <h3 class="titulo-nav">Sair</h3>
+              </a>
+            </li>
           </ul>
         </nav>
       </div>
@@ -52,63 +58,108 @@
 
     <div class="container body-content">
       <h2 class="texto titulo">Ações</h2>
+      {{acoes}}
 
-      <form class="form-component" action="" method="post">
-        <div class="div-form-esq">
-          <input type="hidden" name="id" value="" />
-          <button
-            name="tesouroDetail"
-            class="componente componente-tesouro"
-            type="submit"
-          >
-            <div class="cima cima-tesouro">
-              <h3 class="h3"></h3>
-              <p class="texto-fii">
-                Valor Aplicado:
-              </p>
-            </div>
-            <div class="baixo baixo-tesouro">
-              <div class="baixo-esq">
-                <p class="texto-fii">Valor Atual:</p>
-                <p class="texto-fii">
-                  R$
-                </p>
-              </div>
-              <div class="baixo-dir">
-                <p class="texto-fii texto-fii-baixo">Valor Prometido:</p>
-                <p class="texto-fii">R$</p>
-              </div>
-            </div>
-          </button>
+      <button class="close-button" id="openModal"> Adicionar Ações</button>
+      <div id="ModalFii" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Adicionar Ações</h2>
+          <form id="addFiiForm">
+            <p>Nome</p>
+            <input type="text" name="nome" required>
+            <p>Quantidade de cotas</p>
+            <input type="text" name="qtdecotas" required>
+            <p>Valor de Compra</p>
+            <input type="text" name="valcompra" required>
+            <p>Data de Compra</p>
+            <input type="date" name="datacompra" required>
+            <button type="submit">Adicionar</button>
+          </form>
         </div>
-        <div class="div-form-dir">
-          <ul class="ul-component">
-            <li class="li-component">
-              <a href="" title="Adicionar ao extrato" class="a-component"
-                ><img
-                  class="img-component"
-                  src="/public/image/addtoextract.ico"
-                />
-              </a>
-            </li>
-            <li class="li-component">
-              <a href="" title="Deletar" class="a-component"
-                ><img class="img-component" src="/public/image/trash.ico" />
-              </a>
-            </li>
-          </ul>
-        </div>
-      </form>
+      </div>
+    </div>
+    <script>
 
-      <form action="" class="form" method="post">
-        <input
-          type="submit"
-          class="close-button"
-          value="AddFii"
-          name="AddFii"
-          class="input"
-        />
-      </form>
+      // Modal
+      const modal = document.getElementById("ModalFii");
+      const btn = document.getElementById("openModal");
+      const span = document.getElementsByClassName("close")[0];
+      const form = document.getElementById("addFiiForm");
+
+      btn.onclick = function() {
+          modal.style.display = "block";
+      }
+
+      span.onclick = function() {
+          modal.style.display = "none";
+      }
+
+      window.onclick = function(event) {
+          if (event.target == modal) {
+              modal.style.display = "none";
+          }
+      }
+
+      form.onsubmit = async function(event) {
+          event.preventDefault();
+          const formData = new FormData(form);
+          const data = Object.fromEntries(formData);
+
+          const response = await fetch('/api/fiis', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+          });
+
+          if (response.ok) {
+              // Fechar o modal e atualizar a lista
+              modal.style.display = "none";
+              fetchFiis();
+          } else {
+              alert('Erro ao adicionar Ações');
+          }
+      }
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      const deleteButtons = document.querySelectorAll('.delete-btn');
+
+      deleteButtons.forEach(button => {
+        button.addEventListener('click',async function(event) {
+          console.log(button)
+          event.preventDefault();
+          const form = button.closest('.form-component');
+          console.log(form)
+          if(form){
+            const formId = form.getAttribute("data-id"); // Obtém o data-id
+            console.log(`Apagando formulário com ID: ${formId}`);
+            try{
+              const comandoSql = "DELETE FROM acao where id = "+formId;
+              const response = await fetch('/delete',{
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({comandoSql})
+              })
+              const dados = await response.json()
+              if (dados.message === 'sucess'){
+                //alert("Apagou a ação com sucesso")
+                location.reload()
+              }
+            }catch(e) {
+              console.error("Erro ao apagar ação",e)
+            }
+
+            //form.remove()
+          }
+        })
+      })
+    })
+
+  </script>
     </div>
 
     <footer class="footer">

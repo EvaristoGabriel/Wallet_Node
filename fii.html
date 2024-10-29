@@ -122,6 +122,43 @@
           }
       }
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      const deleteButtons = document.querySelectorAll('.delete-btn');
+
+      deleteButtons.forEach(button => {
+        button.addEventListener('click',async function(event) {
+          console.log(button)
+          event.preventDefault();
+          const form = button.closest('.form-component');
+          console.log(form)
+          if(form){
+            const formId = form.getAttribute("data-id"); // Obtém o data-id
+            console.log(`Apagando formulário com ID: ${formId}`);
+            try{
+              const comandoSql = "DELETE FROM acao where id = "+formId;
+              const response = await fetch('/delete',{
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({comandoSql})
+              })
+              const dados = await response.json()
+              if (dados.message === 'sucess'){
+                //alert("Apagou a ação com sucesso")
+                location.reload()
+              }
+            }catch(e) {
+              console.error("Erro ao apagar ação",e)
+            }
+
+            //form.remove()
+          }
+        })
+      })
+    })
+
+  </script>
+
     <footer class="footer">
       <div class="coluna-esquerda">
         <img class="minhaLogo" src="/public/image/logo.png" alt="Logo" />

@@ -280,7 +280,6 @@ server.get('/tesouro', async(request, reply) =>{
     
     if (consultaFiis.rows.length > 0) {
         let file = readFileSync(__dirname + "/tesouro.html", 'utf8'); // Certifique-se de ler como string
-      
         // Monta o HTML com os dados dos FIIs
         let tesouroHTML = consultaFiis.rows.map(fii => `
             <form class="form-component" action="" method="post">
@@ -289,16 +288,16 @@ server.get('/tesouro', async(request, reply) =>{
                 <button name="tesouroDetail" class="componente componente-tesouro" type="submit">
                     <div class="cima cima-tesouro">
                         <h3 class="h3"></h3>
-                        <p class="texto-fii">Valor Aplicado:</p>
+                        <p class="texto-fii">Valor Aplicado: R$ ${fii.valor_compra}</p>
                     </div>
                     <div class="baixo baixo-tesouro">
                         <div class="baixo-esq">
                             <p class="texto-fii">Valor Atual:</p>
-                            <p class="texto-fii">R$ </p>
+                            <p class="texto-fii">R$ ${fii.valor_atual}</p>
                         </div>
                         <div class="baixo-dir baixo-dir-tesouro">
-                            <p class="texto-fii texto-fii-baixo">Valor Prometido: </p>
-                            <p class="texto-fii ">R$</p>
+                            <p class="texto-fii texto-fii-baixo">Valor Prometido:</p>
+                            <p class="texto-fii ">R$ ${fii.valor_prometido}</p>
                         </div>
                     </div>
                 </button>
@@ -328,21 +327,22 @@ server.get('/acoes', async(request, reply) =>{
     // }
     const userid = request.session.userId
     const consultaFiis = await db.query(`
-                                            SELECT F.*
+                                            SELECT f.id, f.NOME, SUM(f.dividendos) AS DIVIDENDOS, SUM(f.valor_atual) AS VALOR_ATUAL, COUNT(f.NOME) quantidade
                                             FROM acao f
                                             INNER JOIN wallet w on f.walletid = w.id 
                                             INNER JOIN usuario u on w.usercpf = u.cpf 
                                             WHERE u.id = $1 
+                                            GROUP BY F.id
                                             ORDER BY f.NOME;
                                        `, [userid]);
                                        
-    
+    console.log("aqiu"+consultaFiis.rows.length)
     if (consultaFiis.rows.length > 0) {
         let file = readFileSync(__dirname + "/acao.html", 'utf8'); // Certifique-se de ler como string
       
         // Monta o HTML com os dados dos FIIs
         let acaoHTML = consultaFiis.rows.map(fii => `
-            <form class="form-component" action="" method="">
+            <form class="form-component" action="" method="" data-id='${fii.id}'>
                 <div class="div-form-esq">
                 <input type="hidden" name="nome" value="${fii.nome}">
                 <button name="FiiDetail" class="componente" type="submit">
@@ -364,23 +364,35 @@ server.get('/acoes', async(request, reply) =>{
                 </div>
                 <div class="div-form-dir">
                 <ul class="ul-component">
-                    <li class="li-component"><a href="" title="Adicionar ao extrato" class="a-component"><img class="img-component" src="/public/image/addtoextract.ico">
+                    <li class="li-component"><a href="#" title="Adicionar ao extrato" class="a-component"><img class="img-component" src="/public/image/addtoextract.ico">
                     </a></li>
-                    <li class="li-component"><a href="" title="Deletar" class="a-component"><img class="img-component" src="/public/image/trash.ico">
+                    <li class="li-component"><a href="${fii.id}" title="Deletar"  class="a-component delete-btn"><img class="img-component" src="/public/image/trash.ico">
                     </a></li>
                 </ul>
                 </div>
             </form>
         `).join(''); 
         
-        file = file.replace('{{acao}}', acaoHTML);
+        file = file.replace('{{acoes}}', acaoHTML);
         return reply.type('text/html').send(file);
       } else {
         // Se não houver FIIs, retorna o HTML sem os boxes de FIIs
         const file = readFileSync(__dirname + "/acao.html", 'utf8');
-        return reply.type('text/html').send(file.replace('{{acao}}', '<p>Nenhuma ação encontrada</p>'));
+        return reply.type('text/html').send(file.replace('{{acoes}}', '<p>Nenhuma ação encontrada</p>'));
       }
 })
+
+server.post('/delete',(req,res) => {
+    const {comandoSql} = req.body
+    db.query(comandoSql, (error,results) => {
+        if(error){
+            console.error('Erro ao executar o comando: ', error)
+            return res.status(500).send('Erro ao executar o comando de Apagar ação')
+        }
+        res.send({'message':'sucess'})
+    })
+})
+
 server.get('/extrato', async(request, reply) =>{
     // if (!request.session.loggedIn) {
     //     return reply.redirect('/');
